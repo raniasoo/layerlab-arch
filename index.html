@@ -1784,7 +1784,7 @@
       <!-- Left: description -->
       <div class="fade-up">
         <div class="archiscan-badge">
-          <span>2026 Q2 출시 예정</span>
+          <span>정식 서비스 운영 중</span>
         </div>
         <p class="label section-label line-deco">Archi-Scan by LayerLab</p>
         <h2 class="section-title">주소 하나로<br><strong>설계 완성</strong></h2>
@@ -1825,7 +1825,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             내 땅 무료 분석해보기
           </a>
-          <a href="#contact" class="btn-outline" style="border-color:var(--light);color:var(--gray);">도입 문의</a>
+          <a href="#contact" class="btn-outline" style="border-color:var(--light);color:var(--gray);">건축사와 상담하기</a>
         </div>
         <p style="margin-top:12px;font-size:0.72rem;color:var(--gray);letter-spacing:0.02em;">주소 입력 한 번으로 30초 만에 결과 확인</p>
       </div>
@@ -1861,7 +1861,7 @@
                   <svg width="18" height="20" viewBox="0 0 60 68" fill="none"><polygon points="30,2 56,17 56,51 30,66 4,51 4,17" stroke="#b89a6a" stroke-width="2.5" fill="none"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-family="Georgia,serif" font-size="22" font-weight="700">LL</text></svg>
                   <span style="font-family:'Montserrat',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;color:white;">ARCHI-SCAN</span>
                 </div>
-                <span style="font-size:0.6rem;font-family:'Montserrat',sans-serif;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;background:rgba(184,154,106,0.1);border:1px solid rgba(184,154,106,0.25);padding:3px 10px;border-radius:20px;">Beta</span>
+                <span style="font-size:0.6rem;font-family:'Montserrat',sans-serif;letter-spacing:0.12em;color:#4ade80;text-transform:uppercase;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);padding:3px 10px;border-radius:20px;">Live</span>
               </div>
               <!-- Mock App UI with animations -->
               <div style="width:100%;padding:20px 24px;flex:1;overflow:hidden;">
@@ -3218,6 +3218,73 @@
     });
   })();
   }); // DOMContentLoaded
+
+  // Archi-Scan 타이핑 애니메이션
+  document.addEventListener('DOMContentLoaded', function() {
+    var typingEl = document.getElementById('mock-typing');
+    var analyzeBtn = document.getElementById('mock-analyze-btn');
+    var resultsEl = document.getElementById('mock-results');
+    var plans = document.querySelectorAll('.mock-plan');
+    if (!typingEl) return;
+
+    var addresses = [
+      '서울시 종로구 평창동 123-4',
+      '서울시 강남구 삼성동 45-12',
+      '서울시 서초구 반포동 78-3'
+    ];
+    var addrIdx = 0;
+
+    function runDemo() {
+      var addr = addresses[addrIdx % addresses.length];
+      addrIdx++;
+      typingEl.textContent = '';
+      if (analyzeBtn) analyzeBtn.style.opacity = '0.5';
+      if (resultsEl) resultsEl.style.opacity = '0';
+      plans.forEach(function(p) { p.style.opacity = '0'; p.style.transform = 'translateY(8px)'; });
+
+      var i = 0;
+      var timer = setInterval(function() {
+        if (i < addr.length) {
+          typingEl.textContent += addr[i];
+          i++;
+        } else {
+          clearInterval(timer);
+          if (analyzeBtn) analyzeBtn.style.opacity = '1';
+          setTimeout(function() {
+            if (resultsEl) resultsEl.style.opacity = '1';
+            // countup 애니메이션
+            resultsEl.querySelectorAll('.countup').forEach(function(el) {
+              var target = parseInt(el.getAttribute('data-target'));
+              var suffix = el.getAttribute('data-suffix') || '';
+              var current = 0;
+              var step = Math.ceil(target / 20);
+              var countTimer = setInterval(function() {
+                current += step;
+                if (current >= target) { current = target; clearInterval(countTimer); }
+                el.textContent = current + suffix;
+              }, 40);
+            });
+            // 3안 순차 표시
+            plans.forEach(function(p, idx) {
+              setTimeout(function() { p.style.opacity = '1'; p.style.transform = 'translateY(0)'; }, idx * 200);
+            });
+            // 5초 후 다시 시작
+            setTimeout(runDemo, 5000);
+          }, 600);
+        }
+      }, 80);
+    }
+
+    // 화면에 보일 때 시작
+    var observer = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        observer.disconnect();
+        setTimeout(runDemo, 500);
+      }
+    }, { threshold: 0.3 });
+    var section = document.getElementById('archiscan');
+    if (section) observer.observe(section);
+  });
 
 </script>
 
