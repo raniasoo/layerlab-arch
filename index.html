@@ -3187,7 +3187,11 @@
       const g = galleries[pf];
       card.setAttribute('data-gallery', '1');
       card.addEventListener('click', () => open(pf));
-      // Inject visible trigger button into the thumb (always on top of photo)
+      // Bind existing HTML trigger buttons
+      card.querySelectorAll('.lb-trigger').forEach(btn => {
+        btn.addEventListener('click', (e) => { e.stopPropagation(); open(pf); });
+      });
+      // Inject visible trigger button into the thumb if none exists
       const thumb = card.querySelector('.portfolio-thumb');
       if (thumb && !thumb.querySelector('.lb-trigger')) {
         const btn = document.createElement('button');
