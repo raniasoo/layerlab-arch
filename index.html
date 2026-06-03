@@ -3115,6 +3115,7 @@
     }
   };
 
+  document.addEventListener('DOMContentLoaded', function() {
   (function initLightbox() {
     const lb = document.getElementById('lightbox');
     if (!lb) return;
@@ -3216,6 +3217,7 @@
       else if (e.key === 'ArrowRight') step(1);
     });
   })();
+  }); // DOMContentLoaded
 
 </script>
 
